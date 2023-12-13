@@ -13,6 +13,6 @@ export const apiCall = async (name: String) => {
       },
     }
   );
-  console.log(data);
+  // console.log(data);
   return data;
 };

@@ -3,15 +3,16 @@ import clapper from './assets/clapper.svg';
 import { apiCall } from './services/ApiService';
 import Results from './components/Results';
 
-const initialFormState = {
-  nameOne: '',
-  nameTwo: '',
-};
-
 function App() {
-  const [formState, setFormState] = useState(initialFormState);
-  const [resultOne, setResultOne] = useState<any>();
-  const [resultTwo, setResultTwo] = useState<any>();
+  const [formState, setFormState] = useState({
+    nameOne: '',
+    nameTwo: '',
+  });
+
+  const [resultState, setResultState] = useState({
+    callOne: {},
+    callTwo: {},
+  });
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -27,8 +28,8 @@ function App() {
       const trimmedNameTwo = formState.nameTwo.match(/nm\d*/g)!.join();
       const resOne = await apiCall(trimmedNameOne);
       const resTwo = await apiCall(trimmedNameTwo);
-      setResultOne(resOne);
-      setResultTwo(resTwo);
+
+      setResultState({callOne: resOne, callTwo: resTwo})
     } catch (error) {
       console.log(error);
       alert('something went wrong with the form submission');
@@ -72,10 +73,10 @@ function App() {
           />
         </form>
       </section>
-      {resultOne && resultTwo &&
+      {resultState.callOne.id && resultState.callTwo.id &&
         <section>
-          <Results result={resultOne} />
-          <Results result={resultTwo} />
+          <Results result={resultState.callOne} />
+          <Results result={resultState.callTwo} />
         </section>
       }
     </main>
