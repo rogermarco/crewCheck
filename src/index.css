@@ -4,7 +4,7 @@
 
 @layer components {
   .input-box {
-    @apply text-center text-xl font-light h-8 my-2 border-b-4 w-9/12 sm:w-2/5 border-black m-auto focus:outline-none focus:placeholder-transparent
+    @apply text-center text-xl font-light h-8 my-2 border-b-4 w-9/12 lg:w-2/5 border-black m-auto focus:outline-none focus:placeholder-transparent
   }
 
 }
