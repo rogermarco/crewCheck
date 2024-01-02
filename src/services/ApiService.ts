@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 export const apiCall = async (name: String) => {
-  const { data } = await axios.get(
+  const { data }: AxiosResponse<FilmData> = await axios.get(
     'https://online-movie-database.p.rapidapi.com/actors/get-all-filmography',
     {
       params: {
@@ -13,6 +13,7 @@ export const apiCall = async (name: String) => {
       },
     }
   );
-  // console.log(data);
+  console.log(data);
+  
   return data;
 };

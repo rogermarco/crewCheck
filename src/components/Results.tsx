@@ -1,41 +1,31 @@
-import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 function Results({ resultOne, resultTwo, matches }) {
 
-  const IMDB_URL = 'https://www.imdb.com';
+  const IMDB_URL = 'https://www.imdb.com';  
   
   return (
     <main>
-      <p className='text-center'>It seems like {resultOne.base.name} and {resultTwo.base.name} may have crossed paths in these productions:</p>
+      {matches.length > 0 ?
+      <>
+      <p className='text-center pb-2 border-b'>It appears that {resultOne.base.name} and {resultTwo.base.name} could have crossed paths in these productions:</p>
+      <div className='grid sm:grid-cols-2 lg:grid-cols-3'>
       {matches.map((outer) => {
         return (
-          <div key={uuidv4()} className='border-y py-2'>
-            <div className='text-xl font-bold text-center'><a href={`${IMDB_URL}${outer[0].id}`}>{outer[0].title}</a></div>
-            <p className='text-center'>{resultOne.base.name.split(' ')[0]} worked as {outer[0].job || outer[0].category}</p>
-            <p className='text-center'>{resultTwo.base.name.split(' ')[0]} worked as {outer[1].job || outer[0].category}</p>
+          <div key={uuidv4()} className='max-w-fit m-auto'>
+            <div className='text-xl font-bold text-center underline'><a href={`${IMDB_URL}${outer[0].id}`}>{outer[0].title}</a></div>
+            <p className='text-center'>{resultOne.base.name.split(' ')[0]} worked as <i>{outer[0].job || outer[0].category}</i></p>
+            <p className='text-center pb-2 border-b'>{resultTwo.base.name.split(' ')[0]} worked as <i>{outer[1].job || outer[1].category}</i></p>
           </div>
         )
       })}
+      </div>
+      </>
+      :
+      <p className='text-center'>It doesn't look like {resultOne.base.name} and {resultTwo.base.name} have ever crossed paths!</p>
+      }
     </main>
   );
 }
 
 export default Results;
-
-
-  //   const filmArray = resultOne.result.filmography;
-  //   const list = {};
-  //   for (const index of filmArray) {
-  //     list[index.category] = list[index.category] ? list[index.category] + 1 : 1;
-  //   }
-  //   setCategoryList(list)
-
-
-  /*
-  const idArrayOne = resultOne.filmography.map(a => a.id);
-  const idArrayTwo = resultTwo.filmography
-
-  const badCategories = ['archive_footage', 'self', 'thanks', 'soundtrack']
-  const test = idArrayTwo.filter(({ id }) => idArrayOne.includes(id)).filter(({ category }) => !badCategories.includes(category)).map(a => a.id);
-  */

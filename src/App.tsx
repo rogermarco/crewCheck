@@ -3,7 +3,7 @@ import clapper from './assets/clapper.svg';
 import { apiCall } from './services/ApiService';
 import Results from './components/Results';
 import Loading from './components/Loading';
-import reel from './assets/film-reel.svg';
+import Alert from '@mui/material/Alert';
 
 function App() {
   const [formState, setFormState] = useState({
@@ -18,6 +18,8 @@ function App() {
 
   const [matches, setMatches] = useState();
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -53,12 +55,19 @@ function App() {
         }
       }
     }
-
     setMatches(finalArray);
   };
 
   const handleClick = async () => {
     try {
+      if (!formState.nameOne || !formState.nameTwo) {
+        setAlertMessage('Hey! Add a second person to compare with.');
+        throw new Error();
+      }
+      if (formState.nameOne === formState.nameTwo) {
+        setAlertMessage("You can't compare someone to themselves!");
+        throw new Error();
+      }
       setLoading(true);
       const trimmedNameOne = formState.nameOne.match(/nm\d*/g)!.join();
       const trimmedNameTwo = formState.nameTwo.match(/nm\d*/g)!.join();
@@ -68,14 +77,20 @@ function App() {
 
       setResultState({ callOne: resOne, callTwo: resTwo });
       setLoading(false);
+      setAlert(false);
     } catch (error) {
       console.log(error);
-      alert('something went wrong with the form submission');
+      setAlert(true);
+      setLoading(false);
+      setResultState({
+        callOne: {},
+        callTwo: {},
+      });
     }
   };
 
   return (
-    <main className='w-[90%] m-auto'>
+    <main className='w-[90%] m-auto font-mono'>
       <section>
         <p className='text-center mt-5'>
           Drop a person's full imdb link (or just the nm string from the URL) in
@@ -85,6 +100,16 @@ function App() {
         <p className='text-center'>
           Hit the clapper and any matches will be shown below!
         </p>
+        {alert ? (
+          <Alert
+            severity='info'
+            className='w-fit m-auto mt-1 text-sm border border-blue-300 rounded-lg'
+          >
+            {alertMessage}
+          </Alert>
+        ) : (
+          <></>
+        )}
         <form>
           <div className='flex flex-col lg:flex-row'>
             <input
@@ -106,23 +131,23 @@ function App() {
           </div>
           <img
             src={clapper}
-            className='transition ease-in-out hover:scale-105 h-auto w-2/5 max-w-xs m-auto my-5 cursor-pointer'
+            className='transition ease-in-out hover:scale-105 h-auto w-2/5 max-w-[300px] m-auto my-5 cursor-pointer'
             onClick={handleClick}
           />
         </form>
       </section>
       <section>
-        {loading ? <Loading /> 
-        :
-        resultState.callOne.id && resultState.callTwo.id ? 
-        <Results
-          resultOne={resultState.callOne}
-          resultTwo={resultState.callTwo}
-          matches={matches}
-        />
-        :
-        <div></div>
-        }
+        {loading ? (
+          <Loading />
+        ) : resultState.callOne.id && resultState.callTwo.id ? (
+          <Results
+            resultOne={resultState.callOne}
+            resultTwo={resultState.callTwo}
+            matches={matches}
+          />
+        ) : (
+          <></>
+        )}
       </section>
     </main>
   );
