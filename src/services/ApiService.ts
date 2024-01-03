@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
+import { FilmData } from '../types';
 
-export const apiCall = async (name: String) => {
+export const apiCall = async (name: string) => {
   const { data }: AxiosResponse<FilmData> = await axios.get(
     'https://online-movie-database.p.rapidapi.com/actors/get-all-filmography',
     {

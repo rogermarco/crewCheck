@@ -4,6 +4,7 @@ import { apiCall } from './services/ApiService';
 import Results from './components/Results';
 import Loading from './components/Loading';
 import Alert from '@mui/material/Alert';
+import { FilmData, Films } from './types';
 
 function App() {
   const [formState, setFormState] = useState({
@@ -12,11 +13,11 @@ function App() {
   });
 
   const [resultState, setResultState] = useState({
-    callOne: {},
-    callTwo: {},
+    callOne: {} as FilmData,
+    callTwo: {} as FilmData,
   });
 
-  const [matches, setMatches] = useState();
+  const [matches, setMatches] = useState<Films[][]>();
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -29,13 +30,13 @@ function App() {
     }));
   };
 
-  const comparer = async (one, two) => {
+  const comparer = async (one: FilmData, two: FilmData) => {
     const idArrayOne = one.filmography;
     const idArrayTwo = two.filmography;
 
     // Filter out useless categories, and build an array of just IDs
     const badCategories = ['archive_footage', 'self', 'thanks', 'soundtrack'];
-    const idMatches = await idArrayTwo
+    const idMatches = idArrayTwo
       .filter(({ id }) => idArrayOne.map((entry) => entry.id).includes(id))
       .filter(({ category }) => !badCategories.includes(category))
       .map((entry) => entry.id);
@@ -47,7 +48,7 @@ function App() {
       .filter((film) => idMatches.includes(film.id))
       .filter(({ category }) => !badCategories.includes(category));
     // Combine the two above arrays into one where each index contains the movie object that is associated with each person
-    const finalArray = [];
+    const finalArray: Films[][] = [];
     for (let i = 0; i < filmOneMatches.length; i++) {
       for (let j = 0; j < filmTwoMatches.length; j++) {
         if (filmOneMatches[i].id === filmTwoMatches[j].id) {
@@ -57,7 +58,7 @@ function App() {
     }
     setMatches(finalArray);
   };
-
+  
   const handleClick = async () => {
     try {
       if (!formState.nameOne || !formState.nameTwo) {
@@ -83,8 +84,8 @@ function App() {
       setAlert(true);
       setLoading(false);
       setResultState({
-        callOne: {},
-        callTwo: {},
+        callOne: {} as FilmData,
+        callTwo: {} as FilmData,
       });
     }
   };
@@ -139,11 +140,11 @@ function App() {
       <section>
         {loading ? (
           <Loading />
-        ) : resultState.callOne.id && resultState.callTwo.id ? (
+        ) : resultState!.callOne.id && resultState!.callTwo.id ? (
           <Results
-            resultOne={resultState.callOne}
-            resultTwo={resultState.callTwo}
-            matches={matches}
+            resultOne={resultState!.callOne}
+            resultTwo={resultState!.callTwo}
+            matches={matches!}
           />
         ) : (
           <></>
