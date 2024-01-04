@@ -29,7 +29,7 @@ function App() {
       [name]: value,
     }));
   };
-
+  
   const comparer = async (one: FilmData, two: FilmData) => {
     const idArrayOne = one.filmography;
     const idArrayTwo = two.filmography;
