@@ -2,8 +2,10 @@ import { useState, ChangeEvent } from 'react';
 import { apiCall } from './services/ApiService';
 import Results from './components/Results';
 import Loading from './components/Loading';
+import Socials from './components/Socials';
 import Alert from '@mui/material/Alert';
 import { FilmData, Films } from './types';
+import clapper from './assets/clapper.svg';
 
 function App() {
   const [formState, setFormState] = useState({
@@ -28,7 +30,7 @@ function App() {
       [name]: value,
     }));
   };
-  
+
   const comparer = async (one: FilmData, two: FilmData) => {
     const idArrayOne = one.filmography;
     const idArrayTwo = two.filmography;
@@ -57,7 +59,7 @@ function App() {
     });
     setMatches(finalArray);
   };
-  
+
   const handleClick = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -91,6 +93,7 @@ function App() {
   };
 
   return (
+    <>
     <main className='w-[90%] m-auto font-mono'>
       <section>
         <p className='text-center mt-5'>
@@ -133,9 +136,11 @@ function App() {
           <div className='flex items-center'>
             <button
               type='submit'
-              
-              className='transition ease-in-out hover:scale-105 h-72 w-2/5 max-w-[300px] m-auto my-5 bg-clapper bg-auto bg-no-repeat'
-              >
+              className='transition ease-in-out hover:scale-105 focus:scale-105 h-auto w-2/5 max-w-[300px] m-auto my-5'
+            >
+              <img src={clapper}
+                alt='Submit button'
+              />
             </button>
           </div>
         </form>
@@ -154,6 +159,11 @@ function App() {
         )}
       </section>
     </main>
+    <footer className='mt-10 mb-5'>
+      <p className='text-xs text-center'>If you find any mistakes with the results or any other issues with the site, please reach out!</p>
+      <Socials />
+    </footer>
+    </>
   );
 }
 
