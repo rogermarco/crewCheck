@@ -1,5 +1,4 @@
 import { useState, ChangeEvent } from 'react';
-import clapper from './assets/clapper.svg';
 import { apiCall } from './services/ApiService';
 import Results from './components/Results';
 import Loading from './components/Loading';
@@ -49,17 +48,18 @@ function App() {
       .filter(({ category }) => !badCategories.includes(category));
     // Combine the two above arrays into one where each index contains the movie object that is associated with each person
     const finalArray: Films[][] = [];
-    for (let i = 0; i < filmOneMatches.length; i++) {
-      for (let j = 0; j < filmTwoMatches.length; j++) {
-        if (filmOneMatches[i].id === filmTwoMatches[j].id) {
-          finalArray.push([filmOneMatches[i], filmTwoMatches[j]]);
+    filmOneMatches.forEach((filmOne) => {
+      filmTwoMatches.forEach((filmTwo) => {
+        if (filmOne.id === filmTwo.id) {
+          finalArray.push([filmOne, filmTwo]);
         }
-      }
-    }
+      });
+    });
     setMatches(finalArray);
   };
   
-  const handleClick = async () => {
+  const handleClick = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
       if (!formState.nameOne || !formState.nameTwo) {
         setAlertMessage('Hey! Add a second person to compare with.');
@@ -111,7 +111,7 @@ function App() {
         ) : (
           <></>
         )}
-        <form>
+        <form onSubmit={(e) => handleClick(e)}>
           <div className='flex flex-col lg:flex-row'>
             <input
               type='text'
@@ -130,20 +130,23 @@ function App() {
               className='input-box'
             ></input>
           </div>
-          <img
-            src={clapper}
-            className='transition ease-in-out hover:scale-105 h-auto w-2/5 max-w-[300px] m-auto my-5 cursor-pointer'
-            onClick={handleClick}
-          />
+          <div className='flex items-center'>
+            <button
+              type='submit'
+              
+              className='transition ease-in-out hover:scale-105 h-72 w-2/5 max-w-[300px] m-auto my-5 bg-clapper bg-auto bg-no-repeat'
+              >
+            </button>
+          </div>
         </form>
       </section>
       <section>
         {loading ? (
           <Loading />
-        ) : resultState!.callOne.id && resultState!.callTwo.id ? (
+        ) : resultState.callOne.id && resultState.callTwo.id ? (
           <Results
-            resultOne={resultState!.callOne}
-            resultTwo={resultState!.callTwo}
+            resultOne={resultState.callOne}
+            resultTwo={resultState.callTwo}
             matches={matches!}
           />
         ) : (
