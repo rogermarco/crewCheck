@@ -1,4 +1,3 @@
-// import clapper from './src/assets/clapper.svg';
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
