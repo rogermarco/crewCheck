@@ -12,11 +12,6 @@ function App() {
     nameTwo: '',
   });
 
-  // const [resultState, setResultState] = useState({
-  //   callOne: {},
-  //   callTwo: {},
-  // });
-
   const [matches, setMatches] = useState<Matches>();
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(false);
@@ -77,17 +72,12 @@ function App() {
       const resTwo = await apiCall(trimmedNameTwo);
       comparer(resOne, resTwo);
 
-      // setResultState({ callOne: resOne, callTwo: resTwo });
       setLoading(false);
       setAlert(false);
     } catch (error) {
       console.log(error);
       setAlert(true);
       setLoading(false);
-      // setResultState({
-      //   callOne: {},
-      //   callTwo: {},
-      // });
     }
   };
 
