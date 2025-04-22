@@ -4,6 +4,7 @@ import { apiCall } from './services/ApiService';
 import Results from './components/Results';
 import Loading from './components/Loading';
 import Alert from '@mui/material/Alert';
+import { FilmData, Matches } from './types';
 
 function App() {
   const [formState, setFormState] = useState({
@@ -11,12 +12,12 @@ function App() {
     nameTwo: '',
   });
 
-  const [resultState, setResultState] = useState({
-    callOne: {},
-    callTwo: {},
-  });
+  // const [resultState, setResultState] = useState({
+  //   callOne: {},
+  //   callTwo: {},
+  // });
 
-  const [matches, setMatches] = useState();
+  const [matches, setMatches] = useState<Matches>();
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -29,39 +30,40 @@ function App() {
     }));
   };
 
-  const comparer = async (one, two) => {
-    const idArrayOne = one.filmography;
-    const idArrayTwo = two.filmography;
-
-    // Filter out useless categories, and build an array of just IDs
+  const comparer = (one: FilmData, two: FilmData) => {
     const badCategories = ['archive_footage', 'self', 'thanks', 'soundtrack'];
-    const idMatches = await idArrayTwo
-      .filter(({ id }) => idArrayOne.map((entry) => entry.id).includes(id))
-      .filter(({ category }) => !badCategories.includes(category))
-      .map((entry) => entry.id);
-    // Build two more arrays from the originals filtered by the idMatches array
-    const filmOneMatches = idArrayOne
-      .filter((film) => idMatches.includes(film.id))
-      .filter(({ category }) => !badCategories.includes(category));
-    const filmTwoMatches = idArrayTwo
-      .filter((film) => idMatches.includes(film.id))
-      .filter(({ category }) => !badCategories.includes(category));
-    // Combine the two above arrays into one where each index contains the movie object that is associated with each person
+
+    const filteredOne = one.filmography.filter(
+      (entry) => !badCategories.includes(entry.category)
+    );
+    const filteredTwo = two.filmography.filter(
+      (entry) => !badCategories.includes(entry.category)
+    );
+
+    // Create a Map to quickly look up film entries by ID for the first person
+    const filmMap = new Map(filteredOne.map((entry) => [entry.id, entry]));
+
+    // Find matches and build the final array in one step
     const finalArray = [];
-    for (let i = 0; i < filmOneMatches.length; i++) {
-      for (let j = 0; j < filmTwoMatches.length; j++) {
-        if (filmOneMatches[i].id === filmTwoMatches[j].id) {
-          finalArray.push([filmOneMatches[i], filmTwoMatches[j]]);
-        }
+
+    for (const filmTwo of filteredTwo) {
+      const filmOne = filmMap.get(filmTwo.id);
+      if (filmOne) {
+        finalArray.push([filmOne, filmTwo]);
       }
     }
-    setMatches(finalArray);
+
+    setMatches({
+      nameOne: one.base.name,
+      nameTwo: two.base.name,
+      matches: finalArray,
+    });
   };
 
   const handleClick = async () => {
     try {
       if (!formState.nameOne || !formState.nameTwo) {
-        setAlertMessage('Hey! Add a second person to compare with.');
+        setAlertMessage('Hey! Add another person to compare with.');
         throw new Error();
       }
       if (formState.nameOne === formState.nameTwo) {
@@ -75,17 +77,17 @@ function App() {
       const resTwo = await apiCall(trimmedNameTwo);
       comparer(resOne, resTwo);
 
-      setResultState({ callOne: resOne, callTwo: resTwo });
+      // setResultState({ callOne: resOne, callTwo: resTwo });
       setLoading(false);
       setAlert(false);
     } catch (error) {
       console.log(error);
       setAlert(true);
       setLoading(false);
-      setResultState({
-        callOne: {},
-        callTwo: {},
-      });
+      // setResultState({
+      //   callOne: {},
+      //   callTwo: {},
+      // });
     }
   };
 
@@ -139,12 +141,8 @@ function App() {
       <section>
         {loading ? (
           <Loading />
-        ) : resultState.callOne.id && resultState.callTwo.id ? (
-          <Results
-            resultOne={resultState.callOne}
-            resultTwo={resultState.callTwo}
-            matches={matches}
-          />
+        ) : matches?.nameOne ? (
+          <Results data={matches} />
         ) : (
           <></>
         )}

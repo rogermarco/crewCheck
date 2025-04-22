@@ -1,30 +1,34 @@
 export interface Films {
-  [
-    category: String,
-    job?: String,
-    characters?: String[],
-    roles?: String[],
-    id: String,
-    image: {
-      height: Number;
-      id: String;
-      url: String;
-      width: Number;
-    },
-    status: String,
-    title: String,
-    titleType: String,
-    year: Number,
-  ];
+  category: string;
+  job?: string;
+  characters?: string[];
+  roles?: string[];
+  id: string;
+  image: {
+    height: number;
+    id: string;
+    url: string;
+    width: number;
+  };
+  status: string;
+  title: string;
+  titleType: string;
+  year: number;
 }
 
 export interface FilmData {
-  id: String;
+  id: string;
   base: {
-    '@type': String;
-    id: String;
-    legacyNameText: String;
-    name: String;
+    '@type': string;
+    id: string;
+    legacyNameText: string;
+    name: string;
   };
   filmography: Films[];
+}
+
+export interface Matches {
+  nameOne: string;
+  nameTwo: string;
+  matches: Films[][];
 }
