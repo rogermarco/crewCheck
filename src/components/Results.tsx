@@ -1,4 +1,5 @@
 import { Matches } from '../types';
+import link from '../assets/link.svg';
 
 interface Props {
   data: Matches;
@@ -19,17 +20,23 @@ function Results(data: Props) {
       {data.data.matches.length > 0 ? (
         <>
           <p className='text-center pb-2 border-b'>
-            It appears that {data.data.nameOne} and {data.data.nameTwo} could
-            have crossed paths in these productions:
+            It looks like {data.data.nameOne} and {data.data.nameTwo} could have
+            crossed paths in these productions:
           </p>
           <div className='grid sm:grid-cols-2 lg:grid-cols-3'>
             {data.data.matches.map((outer) => {
               return (
                 <div key={outer[0].id} className='max-w-fit m-auto'>
-                  <div className='text-xl font-bold text-center underline'>
-                    <a href={`${IMDB_URL}${outer[0].id}`} target='_blank'>
+                  <div className='text-xl font-bold text-center mb-1'>
+                    <a
+                      href={`${IMDB_URL}${outer[0].id}`}
+                      target='_blank'
+                      className='border-black border-b-[3px]'
+                    >
                       {outer[0].title}
+                      <img src={link} className='inline' />
                     </a>
+                    <span> ({outer[0].year})</span>
                   </div>
                   <p className='text-center'>
                     {data.data.nameOne.split(' ')[0]} worked as
@@ -38,7 +45,7 @@ function Results(data: Props) {
                   </p>
                   <p className='text-center pb-2 border-b'>
                     {data.data.nameTwo.split(' ')[0]} worked as
-                    {indefiniteArticle(outer[0].job || outer[0].category)}
+                    {indefiniteArticle(outer[1].job || outer[1].category)}
                     <i>{outer[1].job || outer[1].category}</i>
                   </p>
                 </div>

@@ -5,6 +5,7 @@ import Loading from './components/Loading';
 import Socials from './components/Socials';
 import Alert from '@mui/material/Alert';
 import { FilmData, Matches } from './types';
+import clapper from './assets/clapper.svg';
 
 function App() {
   const [formState, setFormState] = useState({
@@ -83,62 +84,71 @@ function App() {
   };
 
   return (
-    <main className='w-[90%] m-auto font-mono'>
-      <section>
-        <p className='text-center mt-5'>
-          Drop a person's full imdb link (or just the nm string from the URL) in
-          each box to compare the two to see if they have worked together
-          before.
+    <>
+      <main className='w-[90%] m-auto font-mono'>
+        <section>
+          <p className='text-center mt-5'>
+            Drop a person's full imdb link (or just the nm string from the URL)
+            in each box to compare the two to see if they have worked together
+            before.
+          </p>
+          <p className='text-center'>
+            Hit the clapper and any matches will be shown below!
+          </p>
+          {alert ? (
+            <Alert
+              severity='info'
+              className='w-fit m-auto mt-1 text-sm border border-blue-300 rounded-lg'
+            >
+              {alertMessage}
+            </Alert>
+          ) : (
+            <></>
+          )}
+          <form>
+            <div className='flex flex-col lg:flex-row'>
+              <input
+                type='text'
+                placeholder='First person'
+                name='nameOne'
+                value={formState.nameOne}
+                onChange={handleChange}
+                className='input-box'
+              ></input>
+              <input
+                type='text'
+                placeholder='Second person'
+                name='nameTwo'
+                value={formState.nameTwo}
+                onChange={handleChange}
+                className='input-box'
+              ></input>
+            </div>
+            <img
+              src={clapper}
+              className='transition ease-in-out hover:scale-105 h-auto w-2/5 max-w-[300px] m-auto my-5 cursor-pointer'
+              onClick={handleClick}
+            />
+          </form>
+        </section>
+        <section>
+          {loading ? (
+            <Loading />
+          ) : matches?.nameOne ? (
+            <Results data={matches} />
+          ) : (
+            <></>
+          )}
+        </section>
+      </main>
+      <footer className='mt-10 mb-5'>
+        <p className='text-xs text-center'>
+          If you find any mistakes with the results or any other issues with the
+          site, please reach out!
         </p>
-        <p className='text-center'>
-          Hit the clapper and any matches will be shown below!
-        </p>
-        {alert ? (
-          <Alert
-            severity='info'
-            className='w-fit m-auto mt-1 text-sm border border-blue-300 rounded-lg'
-          >
-            {alertMessage}
-          </Alert>
-        ) : (
-          <></>
-        )}
-        <form>
-          <div className='flex flex-col lg:flex-row'>
-            <input
-              type='text'
-              placeholder='First person'
-              name='nameOne'
-              value={formState.nameOne}
-              onChange={handleChange}
-              className='input-box'
-            ></input>
-            <input
-              type='text'
-              placeholder='Second person'
-              name='nameTwo'
-              value={formState.nameTwo}
-              onChange={handleChange}
-              className='input-box'
-            ></input>
-          </div>
-          <img
-            src={clapper}
-            className='transition ease-in-out hover:scale-105 h-auto w-2/5 max-w-[300px] m-auto my-5 cursor-pointer'
-            onClick={handleClick}
-          />
-        </form>
-      </section>
-      <section>
-        {loading ? (
-          <Loading />
-        ) : matches?.nameOne ? (
-          <Results data={matches} />
-        ) : (
-          <></>
-        )}
-      </section>
-    </main>
+        <Socials />
+      </footer>
+    </>
   );
 }
 
