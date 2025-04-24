@@ -1,8 +1,8 @@
 import { useState, ChangeEvent } from 'react';
-import clapper from './assets/clapper.svg';
 import { apiCall } from './services/ApiService';
 import Results from './components/Results';
 import Loading from './components/Loading';
+import Socials from './components/Socials';
 import Alert from '@mui/material/Alert';
 import { FilmData, Matches } from './types';
 
@@ -55,7 +55,8 @@ function App() {
     });
   };
 
-  const handleClick = async () => {
+  const handleClick = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
       if (!formState.nameOne || !formState.nameTwo) {
         setAlertMessage('Hey! Add another person to compare with.');

@@ -14,6 +14,9 @@ export interface Films {
   title: string;
   titleType: string;
   year: number;
+  episodeNumber?: string;
+  releaseDate?: string;
+  seasonNumber?: string;
 }
 
 export interface FilmData {
